@@ -24,12 +24,12 @@ services:
     env_file:
       - .env
     ports:
-      - ${DATABASE_PORT}:${DATABASE_PORT}
+      - ${DATABASE_PORT}:5432
     environment:
       PG_DATA: /var/lib/postgresql/data
       POSTGRES_DB: $POSTGRES_DB
       POSTGRES_USER: $POSTGRES_USER
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
     volumes:
-#      - ./postgres-data:/var/lib/postgresql/data
-      - ./create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - ./postgres-data:/var/lib/postgresql/data
+#      - ./create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
