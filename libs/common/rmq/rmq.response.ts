@@ -1,7 +1,7 @@
 export class RmqResponse<T> {
   payload: T;
   status: number;
-  error: Error;
+  error: any;
 
   constructor(payload, status, error = null) {
     this.payload = payload;

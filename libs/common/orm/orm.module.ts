@@ -8,7 +8,7 @@ export const typeOrmConfigAsync: TypeOrmModuleAsyncOptions = {
   useFactory: async (configService: ConfigService) => ({
     type: 'postgres',
     host: configService.get('TYPEORM_HOST'),
-    port: parseInt(configService.get('TYPEORM_PORT'), 10),
+    port: parseInt(configService.get('DATABASE_PORT'), 10),
     username: configService.get('TYPEORM_USERNAME'),
     password: configService.get('TYPEORM_PASSWORD'),
     database: configService.get('TYPEORM_DATABASE'),

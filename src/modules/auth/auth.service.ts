@@ -7,6 +7,7 @@ import { ClientEntity } from '../../entity/client.entity';
 import { ClientRegistrationRequestDto } from './dto/client-registration.request.dto';
 import { RmqResponse } from '../../../libs/common/rmq/rmq.response';
 import { ClientLoginResponseDto } from './dto/client-login.response.dto';
+import { rmqErrorResponse } from '../../../libs/common/rmq/rmq-error.response';
 
 @Injectable()
 export class AuthService {
@@ -35,7 +36,7 @@ export class AuthService {
         HttpStatus.OK,
       );
     } catch (error) {
-      return new RmqResponse<any>(null, HttpStatus.BAD_REQUEST, error);
+      return rmqErrorResponse(error);
     }
   }
 
@@ -57,9 +58,12 @@ export class AuthService {
 
       await this.clientRepository.save(newClient);
 
-      return new RmqResponse<any>('Registration successes', HttpStatus.CREATED);
+      return new RmqResponse<string>(
+        'Registration successes',
+        HttpStatus.CREATED,
+      );
     } catch (error) {
-      return new RmqResponse<any>(null, HttpStatus.BAD_REQUEST, error);
+      return rmqErrorResponse(error);
     }
   }
 
