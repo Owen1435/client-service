@@ -8,12 +8,14 @@ import { ClientRegistrationRequestDto } from './dto/client-registration.request.
 import { RmqResponse } from '../../../libs/common/rmq/rmq.response';
 import { ClientLoginResponseDto } from './dto/client-login.response.dto';
 import { rmqErrorResponse } from '../../../libs/common/rmq/rmq-error.response';
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 
 @Injectable()
 export class AuthService {
   constructor(
     private clientRepository: ClientRepository,
     private jwtService: JwtService,
+    private readonly amqpConnection: AmqpConnection,
   ) {}
 
   async login(
@@ -52,11 +54,17 @@ export class AuthService {
       }
 
       const newClient = new ClientEntity();
+      newClient.registerDate = new Date();
       newClient.login = registerData.login;
       newClient.mail = registerData.mail;
       newClient.pass = await bcrypt.hash(registerData.pass, 12);
 
-      await this.clientRepository.save(newClient);
+      const savedClient = await this.clientRepository.save(newClient);
+
+      //todo exchange
+      this.amqpConnection.publish('amq.direct', 'client.registered.route', {
+        client: savedClient,
+      });
 
       return new RmqResponse<string>(
         'Registration successes',
