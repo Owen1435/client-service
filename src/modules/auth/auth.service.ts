@@ -62,7 +62,7 @@ export class AuthService {
       const savedClient = await this.clientRepository.save(newClient);
 
       //todo exchange
-      this.amqpConnection.publish('amq.direct', 'client.registered.route', {
+      this.amqpConnection.publish('client.registered.exchange', '', {
         client: savedClient,
       });
 

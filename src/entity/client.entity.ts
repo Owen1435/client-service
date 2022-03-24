@@ -22,6 +22,11 @@ export class ClientEntity extends BaseEntity {
   mail: string;
 
   @Column({
+    type: 'int',
+  })
+  orderCount: number;
+
+  @Column({
     type: 'timestamp',
     nullable: true,
   })
