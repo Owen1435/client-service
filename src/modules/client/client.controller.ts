@@ -1,6 +1,8 @@
 import { Controller } from '@nestjs/common';
 import { ClientService } from './client.service';
-import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
+import { RabbitRPC, RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
+import { RmqResponse } from '../../../libs/common/rmq/rmq.response';
+import { GetClientDiscountRequestDto } from './dto/get-client-discount.request.dto';
 
 @Controller('client')
 export class ClientController {
@@ -14,5 +16,14 @@ export class ClientController {
   })
   incrementOrderCount(clientId: number) {
     this.clientService.incrementOrderCount(clientId);
+  }
+
+  @RabbitRPC({
+    exchange: 'amq.direct',
+    routingKey: 'client.get.discount.route',
+    queue: 'client.get.discount.queue',
+  })
+  getClientDiscount(clientId: number): Promise<RmqResponse<number>> {
+    return this.clientService.getClientDiscount(clientId);
   }
 }
