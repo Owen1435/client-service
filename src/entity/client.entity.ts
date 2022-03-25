@@ -1,5 +1,6 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
+import { RoleEntity } from './role.entity';
 
 @Entity({ name: 'clients' })
 export class ClientEntity extends BaseEntity {
@@ -15,6 +16,10 @@ export class ClientEntity extends BaseEntity {
   })
   pass: string;
 
+  @ManyToMany(() => RoleEntity, (role) => role.clients)
+  @JoinTable()
+  roles: RoleEntity[];
+
   @Column({
     type: 'varchar',
     nullable: true,
@@ -23,6 +28,7 @@ export class ClientEntity extends BaseEntity {
 
   @Column({
     type: 'int',
+    default: 0,
   })
   orderCount: number;
 

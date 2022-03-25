@@ -9,11 +9,15 @@ import { RmqResponse } from '../../../libs/common/rmq/rmq.response';
 import { ClientLoginResponseDto } from './dto/client-login.response.dto';
 import { rmqErrorResponse } from '../../../libs/common/rmq/rmq-error.response';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
+import { plainToClass } from 'class-transformer';
+import { RoleRepository } from '../role/role.repository';
+import { RoleEntity } from 'src/entity/role.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     private clientRepository: ClientRepository,
+    private roleRepository: RoleRepository,
     private jwtService: JwtService,
     private readonly amqpConnection: AmqpConnection,
   ) {}
@@ -23,12 +27,17 @@ export class AuthService {
   ): Promise<RmqResponse<ClientLoginResponseDto>> {
     try {
       const client = await this.clientRepository.findOne({
-        login: loginData.login,
+        where: {
+          login: loginData.login,
+        },
+        relations: ['roles'],
       });
+
       await this.validateClient(client, loginData.pass);
       const payload = {
-        login: client.login,
         id: client.id,
+        login: client.login,
+        roles: client.roles.map((role) => role.role),
       };
 
       return new RmqResponse<ClientLoginResponseDto>(
@@ -53,15 +62,20 @@ export class AuthService {
         throw new HttpException('User already exist', HttpStatus.BAD_REQUEST);
       }
 
-      const newClient = new ClientEntity();
-      newClient.registerDate = new Date();
-      newClient.login = registerData.login;
-      newClient.mail = registerData.mail;
-      newClient.pass = await bcrypt.hash(registerData.pass, 12);
+      const role: RoleEntity = await this.roleRepository.findOne({
+        role: 'user',
+      });
+
+      const newClient = plainToClass(ClientEntity, {
+        registerDate: new Date(),
+        login: registerData.login,
+        mail: registerData.mail,
+        pass: await bcrypt.hash(registerData.pass, 12),
+        roles: [role],
+      });
 
       const savedClient = await this.clientRepository.save(newClient);
 
-      //todo exchange
       this.amqpConnection.publish('client.registered.exchange', '', {
         client: savedClient,
       });

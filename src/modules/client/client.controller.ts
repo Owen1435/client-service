@@ -2,7 +2,6 @@ import { Controller } from '@nestjs/common';
 import { ClientService } from './client.service';
 import { RabbitRPC, RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import { RmqResponse } from '../../../libs/common/rmq/rmq.response';
-import { GetClientDiscountRequestDto } from './dto/get-client-discount.request.dto';
 
 @Controller('client')
 export class ClientController {

@@ -5,14 +5,14 @@ import { AuthService } from './auth.service';
 import { ClientRepository } from '../client/client.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientEntity } from '../../entity/client.entity';
+import { jwtConfig } from '../../../libs/common/jwt/jwt.config';
+import { RoleModule } from '../role/role.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ClientEntity, ClientRepository]),
-    JwtModule.register({
-      secret: 'secret',
-      signOptions: { expiresIn: '24h' },
-    }),
+    JwtModule.register(jwtConfig),
+    RoleModule,
   ],
   controllers: [AuthController],
   providers: [AuthService],
