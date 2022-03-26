@@ -7,7 +7,7 @@ import { RmqResponse } from '../../../libs/common/rmq/rmq.response';
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
-  //todo плохое решение, сделал для теста
+  //todo плохое решение (тест)
   @RabbitSubscribe({
     exchange: 'order.created.exchange',
     routingKey: '',

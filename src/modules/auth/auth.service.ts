@@ -63,7 +63,7 @@ export class AuthService {
       }
 
       const role: RoleEntity = await this.roleRepository.findOne({
-        role: 'user',
+        role: 'admin', //test
       });
 
       const newClient = plainToClass(ClientEntity, {
@@ -91,7 +91,7 @@ export class AuthService {
 
   private async validateClient(client: ClientEntity, pass: string) {
     if (!client) {
-      throw new HttpException('User was not found', HttpStatus.BAD_REQUEST);
+      throw new HttpException('User was not found', HttpStatus.NOT_FOUND);
     }
     const passFl = await bcrypt.compare(pass, client.pass);
     if (client && passFl) {
