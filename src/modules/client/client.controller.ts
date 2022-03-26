@@ -2,6 +2,7 @@ import { Controller } from '@nestjs/common';
 import { ClientService } from './client.service';
 import { RabbitRPC, RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import { RmqResponse } from '../../../libs/common/rmq/rmq.response';
+import { Order } from '../../../libs/domain/order-service/order';
 
 @Controller('client')
 export class ClientController {
@@ -13,8 +14,8 @@ export class ClientController {
     routingKey: '',
     queue: 'order.created.queue.client-service',
   })
-  incrementOrderCount(clientId: number) {
-    this.clientService.incrementOrderCount(clientId);
+  incrementOrderCount(order: Order) {
+    this.clientService.incrementOrderCount(order.client.id);
   }
 
   @RabbitRPC({
