@@ -13,5 +13,6 @@ import { DiscountModule } from '../discount/discount.module';
   ],
   controllers: [ClientController],
   providers: [ClientService],
+  exports: [ClientService],
 })
 export class ClientModule {}

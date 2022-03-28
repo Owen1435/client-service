@@ -1,10 +1,11 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RabbitRPC } from '@golevelup/nestjs-rabbitmq';
 import { ClientLoginRequestDto } from './dto/client-login.request.dto';
 import { ClientRegistrationRequestDto } from './dto/client-registration.request.dto';
 import { RmqResponse } from '../../../libs/common/rmq/rmq.response';
 import { ClientLoginResponseDto } from './dto/client-login.response.dto';
+import { LocalAuthGuard } from 'libs/common/guards/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -16,9 +17,9 @@ export class AuthController {
     queue: 'client.login.queue',
   })
   clientLogin(
-    msg: ClientLoginRequestDto,
+    loginDto: ClientLoginRequestDto,
   ): Promise<RmqResponse<ClientLoginResponseDto>> {
-    return this.authService.login(msg);
+    return this.authService.login(loginDto);
   }
 
   @RabbitRPC({
@@ -27,8 +28,8 @@ export class AuthController {
     queue: 'client.register.queue',
   })
   clientRegister(
-    msg: ClientRegistrationRequestDto,
+    registerDto: ClientRegistrationRequestDto,
   ): Promise<RmqResponse<string>> {
-    return this.authService.registration(msg);
+    return this.authService.registration(registerDto);
   }
 }

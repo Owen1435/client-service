@@ -4,6 +4,7 @@ import { DiscountRepository } from '../discount/discount.repository';
 import { RmqResponse } from '../../../libs/common/rmq/rmq.response';
 import { rmqErrorResponse } from '../../../libs/common/rmq/rmq-error.response';
 import { LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import { ClientEntity } from '../../entity/client.entity';
 
 @Injectable()
 export class ClientService {
@@ -39,5 +40,18 @@ export class ClientService {
     } catch (error) {
       return rmqErrorResponse(error);
     }
+  }
+
+  async getByLogin(login: string): Promise<ClientEntity> {
+    return await this.clientRepository.findOne({
+      where: {
+        login,
+      },
+      relations: ['roles'],
+    });
+  }
+
+  async register(client: ClientEntity): Promise<ClientEntity> {
+    return await this.clientRepository.save(client);
   }
 }

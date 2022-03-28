@@ -1,8 +1,12 @@
-import { EXPIRES_IN, SECRET_KEY } from './jwt.constant';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
-export const jwtConfig = {
-  secret: SECRET_KEY,
-  signOptions: {
-    expiresIn: EXPIRES_IN,
-  },
+export const jwtConfigAsync = {
+  imports: [ConfigModule],
+  inject: [ConfigService],
+  useFactory: async (configService: ConfigService) => ({
+    secret: configService.get('SECRET_KEY'),
+    signOptions: {
+      expiresIn: configService.get('EXPIRES_IN'),
+    },
+  }),
 };
