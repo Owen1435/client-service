@@ -6,7 +6,7 @@ import { RoleEntity } from './role.entity';
 export class ClientEntity extends BaseEntity {
   @Column({
     type: 'varchar',
-    nullable: true,
+    unique: true,
   })
   login: string;
 

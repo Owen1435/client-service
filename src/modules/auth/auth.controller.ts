@@ -1,11 +1,10 @@
-import { Controller, Req, UseGuards } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RabbitRPC } from '@golevelup/nestjs-rabbitmq';
 import { ClientLoginRequestDto } from './dto/client-login.request.dto';
 import { ClientRegistrationRequestDto } from './dto/client-registration.request.dto';
 import { RmqResponse } from '../../../libs/common/rmq/rmq.response';
 import { ClientLoginResponseDto } from './dto/client-login.response.dto';
-import { LocalAuthGuard } from 'libs/common/guards/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
